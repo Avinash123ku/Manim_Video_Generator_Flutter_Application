@@ -92,21 +92,6 @@ class _GeneralChatScreenStatefulState
             ),
             child: Row(
               children: [
-                // Camera icon (left side like Perplexity)
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
                 // Input field (expanded to take most space)
                 Expanded(
                   child: Container(
@@ -121,6 +106,16 @@ class _GeneralChatScreenStatefulState
                     ),
                     child: Row(
                       children: [
+                        // Search icon (left side like Perplexity)
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          child: const Icon(
+                            Icons.search,
+                            color: Colors.white54,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: TextField(
                             controller: _messageController,
