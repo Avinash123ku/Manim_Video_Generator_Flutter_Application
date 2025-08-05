@@ -1,0 +1,7 @@
+project_id = "lohnajutfpglpdzywzuf"
+
+[functions.chat]
+verify_jwt = false
+
+[functions.get-messages]
+verify_jwt = false

@@ -1,0 +1,36 @@
+name: chat_pdf_app
+description: A Flutter app for chatting with PDFs using gesture-based text extraction
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  http: ^1.1.2
+  file_selector: ^1.0.3
+  flutter_pdfview: ^1.3.2
+  path_provider: ^2.1.1
+  shared_preferences: ^2.2.2
+  flutter_riverpod: ^2.4.9
+  uuid: ^4.2.1
+  permission_handler: ^11.2.0
+  supabase_flutter: ^2.3.4
+  url_launcher: ^6.2.4
+  video_player: ^2.8.2
+  chewie: ^1.7.4
+  flutter_tts: ^3.8.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
