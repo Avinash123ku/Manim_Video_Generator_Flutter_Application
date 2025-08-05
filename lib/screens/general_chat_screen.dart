@@ -34,71 +34,29 @@ class _GeneralChatScreenStatefulState
     final chatNotifier = ref.read(chatProvider.notifier);
 
     return Container(
-      color: Colors.transparent, // Transparent to show background pattern
+      color: Colors.transparent,
       child: Column(
         children: [
-          // Section Header (like Perplexity)
+          // Clean header without unnecessary buttons
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Row(
-              children: [
-                const Text(
-                  'Search',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  onPressed: () => chatNotifier.refreshMessages(),
-                  tooltip: 'Refresh Messages',
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.clear_all,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  onPressed: () => chatNotifier.clearHistory(),
-                  tooltip: 'Clear Chat',
-                ),
-                // Debug button for testing video display
-                IconButton(
-                  icon: const Icon(
-                    Icons.video_library,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    print('🧪 [DEBUG] Test video generation button pressed');
-                    // Send a test message that should generate a video
-                    const testMessage =
-                        'Generate a video showing the graph of y = sin(x) with animation';
-                    print('🧪 [DEBUG] Test message sent: "$testMessage"');
-                    chatNotifier.sendMessage(message: testMessage);
-                    print(
-                        '🧪 [DEBUG] Message should trigger video generation...');
-                  },
-                  tooltip: 'Test Video Generation',
-                ),
-              ],
+            child: const Text(
+              'Search',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           // Main Content Area
           Expanded(
             child: chatState.messages.isEmpty
-                ? _buildEmptyState(context)
+                ? _buildPerplexityEmptyState(context)
                 : _buildChatList(context, chatState, chatNotifier),
           ),
-          // Loading and Error States
+          // Loading indicator
           if (chatState.isLoading)
             Container(
               width: double.infinity,
@@ -109,6 +67,7 @@ class _GeneralChatScreenStatefulState
                 ),
               ),
             ),
+          // Error display
           if (chatState.error != null)
             Container(
               width: double.infinity,
@@ -119,7 +78,7 @@ class _GeneralChatScreenStatefulState
                 textAlign: TextAlign.center,
               ),
             ),
-          // Perplexity-style Chat Input
+          // Perplexity-style input (left-aligned)
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -133,12 +92,13 @@ class _GeneralChatScreenStatefulState
             ),
             child: Row(
               children: [
-                // Camera Icon (like Perplexity)
+                // Camera icon (left side like Perplexity)
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.camera_alt,
@@ -147,11 +107,10 @@ class _GeneralChatScreenStatefulState
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Input Field (like Perplexity)
+                // Input field (expanded to take most space)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1A1A1A),
                       borderRadius: BorderRadius.circular(24),
@@ -165,7 +124,7 @@ class _GeneralChatScreenStatefulState
                         Expanded(
                           child: TextField(
                             controller: _messageController,
-                            style: const TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white, fontSize: 16),
                             decoration: const InputDecoration(
                               hintText: 'Ask anything...',
                               hintStyle: TextStyle(
@@ -183,12 +142,12 @@ class _GeneralChatScreenStatefulState
                             },
                           ),
                         ),
-                        // Microphone Icon (like Perplexity)
+                        // Microphone icon (inside input like Perplexity)
                         Container(
                           padding: const EdgeInsets.all(4),
                           child: const Icon(
                             Icons.mic,
-                            color: Colors.white,
+                            color: Colors.white54,
                             size: 20,
                           ),
                         ),
@@ -197,24 +156,24 @@ class _GeneralChatScreenStatefulState
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Send Button (like Perplexity)
+                // Send button (right side, circular like Perplexity)
                 Container(
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(22),
                   ),
                   child: IconButton(
                     onPressed: () {
                       final message = _messageController.text.trim();
                       if (message.isNotEmpty) {
-                        print('💬 [CHAT] Sending message: "$message"');
                         chatNotifier.sendMessage(message: message);
                         _messageController.clear();
-                        print('💬 [CHAT] Message sent and input cleared');
                       }
                     },
                     icon: const Icon(
-                      Icons.send,
+                      Icons.arrow_forward,
                       color: Colors.white,
                       size: 20,
                     ),
@@ -228,45 +187,37 @@ class _GeneralChatScreenStatefulState
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildPerplexityEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Perplexity-style Logo
+          // Perplexity-style geometric logo
           Container(
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(40),
             ),
-            child: const Icon(
-              Icons.chat_bubble_outline,
-              color: Colors.white,
-              size: 40,
+            child: CustomPaint(
+              painter: PerplexityLogoPainter(),
             ),
           ),
-          const SizedBox(height: 24),
-          // Tagline (like Perplexity)
+          const SizedBox(height: 32),
+          // Perplexity's exact tagline style
           const Text(
-            'Ask me anything!',
+            'Where\nknowledge\nbegins',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
+              fontSize: 32,
+              fontWeight: FontWeight.w300,
+              height: 1.2,
+              letterSpacing: -0.5,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Start a conversation by typing below.',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          const SizedBox(height: 48),
         ],
       ),
     );
@@ -286,4 +237,41 @@ class _GeneralChatScreenStatefulState
       },
     );
   }
+}
+
+// Custom painter for Perplexity-style geometric logo
+class PerplexityLogoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.8)
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * 0.3;
+
+    // Draw geometric pattern similar to Perplexity
+    // Outer circle
+    canvas.drawCircle(center, radius, paint);
+    
+    // Inner geometric lines
+    final innerRadius = radius * 0.6;
+    for (int i = 0; i < 6; i++) {
+      final angle = (i * 60) * (3.14159 / 180);
+      final startX = center.dx + innerRadius * 0.3 * (i % 2 == 0 ? 1 : -1);
+      final startY = center.dy + innerRadius * 0.3 * (i % 2 == 0 ? -1 : 1);
+      final endX = center.dx + innerRadius * (i % 2 == 0 ? 1 : -1);
+      final endY = center.dy + innerRadius * (i % 2 == 0 ? -1 : 1);
+      
+      canvas.drawLine(
+        Offset(startX, startY),
+        Offset(endX, endY),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

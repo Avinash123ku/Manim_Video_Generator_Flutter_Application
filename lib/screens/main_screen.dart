@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'general_chat_screen.dart';
 import 'pdf_interaction_screen.dart';
 import 'history_screen.dart';
-import 'test_supabase_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -23,11 +22,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color(0xFF0A0A0A), // Perplexity's exact dark background
+      backgroundColor: const Color(0xFF0A0A0A),
       body: Container(
         decoration: BoxDecoration(
-          // Perplexity's subtle geometric pattern background
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -40,15 +37,63 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Main Content - No header at all
+              // Clean header like Perplexity
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  children: [
+                    // Profile icon (left side like Perplexity)
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // App title
+                    const Text(
+                      'chat pdf app',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const Spacer(),
+                    // Settings icon (right side like Perplexity)
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Main Content
               Expanded(
                 child: _screens[_currentIndex],
               ),
-              // Perplexity-style Bottom Navigation
+              // Clean bottom navigation like Perplexity
               Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF0A0A0A),
                   border: Border(
@@ -62,19 +107,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildNavItem(
-                      icon: Icons.search,
+                      icon: Icons.search_rounded,
                       label: 'Search',
                       isActive: _currentIndex == 0,
                       onTap: () => setState(() => _currentIndex = 0),
                     ),
                     _buildNavItem(
-                      icon: Icons.picture_as_pdf,
+                      icon: Icons.description_rounded,
                       label: 'PDF Reader',
                       isActive: _currentIndex == 1,
                       onTap: () => setState(() => _currentIndex = 1),
                     ),
                     _buildNavItem(
-                      icon: Icons.history,
+                      icon: Icons.history_rounded,
                       label: 'History',
                       isActive: _currentIndex == 2,
                       onTap: () => setState(() => _currentIndex = 2),
@@ -100,26 +145,17 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: isActive
-                  ? Colors.white.withOpacity(0.15)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
-              size: 24,
-            ),
+          Icon(
+            icon,
+            color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+            size: 24,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             label,
             style: TextStyle(
               color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

@@ -41,28 +41,13 @@ class HistoryScreen extends ConsumerWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Row(
-              children: [
-                const Text(
-                  'History',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                if (conversations.isNotEmpty)
-                  IconButton(
-                    icon: const Icon(
-                      Icons.delete_sweep,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    onPressed: () => _showClearDialog(context, chatNotifier),
-                    tooltip: 'Clear History',
-                  ),
-              ],
+            child: const Text(
+              'History',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           // Main Content

@@ -58,12 +58,13 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
       ),
       child: Row(
         children: [
-          // Camera Icon (like Perplexity)
+          // Camera icon (left side like Perplexity)
           Container(
-            padding: const EdgeInsets.all(8),
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.camera_alt,
@@ -72,7 +73,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
             ),
           ),
           const SizedBox(width: 12),
-          // Input Field (like Perplexity)
+          // Input field (expanded to take most space)
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -90,7 +91,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                     child: TextField(
                       controller: _controller,
                       focusNode: _focusNode,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                       decoration: const InputDecoration(
                         hintText: 'Ask anything...',
                         hintStyle: TextStyle(
@@ -104,12 +105,12 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       enabled: !widget.isLoading,
                     ),
                   ),
-                  // Microphone Icon (like Perplexity)
+                  // Microphone icon (inside input like Perplexity)
                   Container(
                     padding: const EdgeInsets.all(4),
                     child: const Icon(
                       Icons.mic,
-                      color: Colors.white,
+                      color: Colors.white54,
                       size: 20,
                     ),
                   ),
@@ -118,11 +119,13 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
             ),
           ),
           const SizedBox(width: 12),
-          // Send Button (like Perplexity)
+          // Send button (right side, circular like Perplexity)
           Container(
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(22),
             ),
             child: IconButton(
               onPressed: widget.isLoading ? null : _sendMessage,
@@ -136,7 +139,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       ),
                     )
                   : const Icon(
-                      Icons.send,
+                      Icons.arrow_forward,
                       color: Colors.white,
                       size: 20,
                     ),
