@@ -73,13 +73,10 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
               child: Row(
                 children: [
                   // Search icon (left side like Perplexity)
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.search,
-                      color: Colors.white54,
-                      size: 20,
-                    ),
+                  const Icon(
+                    Icons.search,
+                    color: Colors.white54,
+                    size: 20,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -101,13 +98,10 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                     ),
                   ),
                   // Microphone icon (inside input like Perplexity)
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.mic,
-                      color: Colors.white54,
-                      size: 20,
-                    ),
+                  const Icon(
+                    Icons.mic,
+                    color: Colors.white54,
+                    size: 20,
                   ),
                 ],
               ),
