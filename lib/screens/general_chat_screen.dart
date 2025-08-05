@@ -92,17 +92,17 @@ class _GeneralChatScreenStatefulState
             ),
             child: Row(
               children: [
-                // Search icon (left side like Perplexity)
+                // Camera icon (left side like Perplexity)
                 Container(
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
-                    Icons.search,
-                    color: Colors.white54,
+                    Icons.camera_alt,
+                    color: Colors.white,
                     size: 20,
                   ),
                 ),
@@ -110,10 +110,14 @@ class _GeneralChatScreenStatefulState
                 // Input field (expanded to take most space)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A).withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(25),
+                      color: const Color(0xFF1A1A1A),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                        width: 1,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -157,7 +161,7 @@ class _GeneralChatScreenStatefulState
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(22),
                   ),
                   child: IconButton(
