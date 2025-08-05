@@ -57,32 +57,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    // App title
-                    const Text(
-                      'chat pdf app',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const Spacer(),
-                    // Settings icon (right side like Perplexity)
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: const Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
                   ],
                 ),
               ),
