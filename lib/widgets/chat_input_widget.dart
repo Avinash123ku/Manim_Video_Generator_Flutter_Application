@@ -59,7 +59,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
       child: Row(
         children: [
           // Camera icon (left side like Perplexity)
-          Container(
+                    color: Colors.white.withOpacity(0.15),
             width: 44,
             height: 44,
             decoration: BoxDecoration(
@@ -69,18 +69,14 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
             child: const Icon(
               Icons.camera_alt,
               color: Colors.white,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Input field (expanded to take most space)
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                // Search icon (left side like Perplexity)
+                      color: const Color(0xFF1A1A1A).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(25),
               decoration: BoxDecoration(
                 color: const Color(0xFF1A1A1A),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
+                    Icons.search,
+                    color: Colors.white54,
                   color: Colors.white.withOpacity(0.1),
                   width: 1,
                 ),
