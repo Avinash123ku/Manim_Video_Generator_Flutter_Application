@@ -30,6 +30,10 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
   bool _isAudioPlaying = false;
   double _playbackSpeed = 1.0; // Default speed
   bool _showSpeedControls = false;
+  bool _showTranscript = false;
+  List<String> _transcriptSentences = [];
+  int _currentSentenceIndex = 0;
+  bool _isAutoScrollEnabled = true;
 
   // Available playback speeds
   final List<double> _availableSpeeds = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -39,8 +43,29 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
     super.initState();
     _initializeVideoPlayer();
     _initializeTTS();
+    _prepareTranscript();
   }
 
+  void _prepareTranscript() {
+    if (widget.textContent != null) {
+      // Split text into sentences for better transcript display
+      final text = widget.textContent!
+          .replaceAll('\n', ' ')
+          .replaceAll(RegExp(r'\s+'), ' ')
+          .trim();
+      
+      // Split by sentence endings
+      final sentences = text
+          .split(RegExp(r'[.!?]+'))
+          .where((s) => s.trim().isNotEmpty)
+          .map((s) => s.trim())
+          .toList();
+      
+      setState(() {
+        _transcriptSentences = sentences;
+      });
+    }
+  }
   Future<void> _initializeTTS() async {
     _flutterTts = FlutterTts();
 
@@ -51,10 +76,15 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
     await _flutterTts!.setVolume(1.0);
     await _flutterTts!.setPitch(0.8); // Slightly lower pitch for male voice
 
+    // Set progress handler for transcript highlighting
+    _flutterTts!.setProgressHandler((String text, int startOffset, int endOffset, String word) {
+      _updateTranscriptProgress(text, startOffset, endOffset);
+    });
     // Set completion handler
     _flutterTts!.setCompletionHandler(() {
       setState(() {
         _isAudioPlaying = false;
+        _currentSentenceIndex = 0;
       });
     });
 
@@ -63,10 +93,29 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
       print('TTS Error: $msg');
       setState(() {
         _isAudioPlaying = false;
+        _currentSentenceIndex = 0;
       });
     });
   }
 
+  void _updateTranscriptProgress(String text, int startOffset, int endOffset) {
+    if (_transcriptSentences.isNotEmpty) {
+      // Find which sentence is currently being spoken
+      int totalLength = 0;
+      for (int i = 0; i < _transcriptSentences.length; i++) {
+        final sentenceLength = _transcriptSentences[i].length;
+        if (startOffset >= totalLength && startOffset < totalLength + sentenceLength) {
+          if (_currentSentenceIndex != i) {
+            setState(() {
+              _currentSentenceIndex = i;
+            });
+          }
+          break;
+        }
+        totalLength += sentenceLength + 1; // +1 for sentence separator
+      }
+    }
+  }
   Future<void> _initializeVideoPlayer() async {
     try {
       print('🎬 [VIDEO_PLAYER] ==========================================');
@@ -230,6 +279,7 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
     if (_flutterTts != null && widget.textContent != null && !_isAudioMuted) {
       setState(() {
         _isAudioPlaying = true;
+        _currentSentenceIndex = 0;
       });
 
       // Adjust TTS speed based on video playback speed
@@ -243,6 +293,7 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
       await _flutterTts!.stop();
       setState(() {
         _isAudioPlaying = false;
+        _currentSentenceIndex = 0;
       });
     }
   }
@@ -486,6 +537,42 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
                                   : Colors.grey.shade600),
                         ),
                         tooltip: _isAudioMuted ? 'Unmute Audio' : 'Mute Audio',
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          minimumSize: const Size(40, 40),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  // Transcript toggle button
+                  if (widget.textContent != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: _showTranscript
+                            ? Colors.blue.shade50
+                            : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _showTranscript
+                              ? Colors.blue.shade200
+                              : Colors.grey.shade200,
+                        ),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _showTranscript = !_showTranscript;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.subtitles,
+                          size: 18,
+                          color: _showTranscript
+                              ? Colors.blue.shade600
+                              : Colors.grey.shade600,
+                        ),
+                        tooltip: _showTranscript ? 'Hide Transcript' : 'Show Transcript',
                         style: IconButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
@@ -796,6 +883,213 @@ class _AnimationPlayerWidgetState extends State<AnimationPlayerWidget> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          // Transcript section
+          if (_showTranscript && widget.textContent != null)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2D2D2D),
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.white.withOpacity(0.1),
+                  ),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Transcript header
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.subtitles,
+                        size: 16,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Transcript',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 14,
+                        ),
+                      ),
+                      const Spacer(),
+                      // Auto-scroll toggle
+                      Container(
+                        decoration: BoxDecoration(
+                          color: _isAutoScrollEnabled
+                              ? Colors.blue.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: _isAutoScrollEnabled
+                                ? Colors.blue.withOpacity(0.3)
+                                : Colors.grey.withOpacity(0.3),
+                          ),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isAutoScrollEnabled = !_isAutoScrollEnabled;
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.auto_fix_high,
+                                  size: 14,
+                                  color: _isAutoScrollEnabled
+                                      ? Colors.blue.shade600
+                                      : Colors.grey.shade600,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Auto-scroll',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: _isAutoScrollEnabled
+                                        ? Colors.blue.shade600
+                                        : Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Transcript content
+                  Container(
+                    height: 120,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A1A1A),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                      ),
+                    ),
+                    child: _transcriptSentences.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: _transcriptSentences.length,
+                            itemBuilder: (context, index) {
+                              final isCurrentSentence = index == _currentSentenceIndex && _isAudioPlaying;
+                              
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                margin: const EdgeInsets.only(bottom: 8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: isCurrentSentence
+                                      ? Colors.blue.withOpacity(0.2)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: isCurrentSentence
+                                      ? Border.all(
+                                          color: Colors.blue.withOpacity(0.4),
+                                          width: 1,
+                                        )
+                                      : null,
+                                ),
+                                child: Text(
+                                  _transcriptSentences[index],
+                                  style: TextStyle(
+                                    color: isCurrentSentence
+                                        ? Colors.white
+                                        : Colors.white.withOpacity(0.7),
+                                    fontSize: 13,
+                                    height: 1.4,
+                                    fontWeight: isCurrentSentence
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              'No transcript available',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Transcript controls
+                  Row(
+                    children: [
+                      // TTS status indicator
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: _isAudioPlaying
+                              ? Colors.green.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _isAudioPlaying
+                                ? Colors.green.withOpacity(0.3)
+                                : Colors.grey.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: _isAudioPlaying
+                                    ? Colors.green.shade500
+                                    : Colors.grey.shade500,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _isAudioPlaying ? 'Speaking' : 'Ready',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: _isAudioPlaying
+                                    ? Colors.green.shade600
+                                    : Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      // Sentence progress
+                      if (_transcriptSentences.isNotEmpty)
+                        Text(
+                          '${_currentSentenceIndex + 1}/${_transcriptSentences.length}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.white.withOpacity(0.6),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
               ),
             ),
         ],
