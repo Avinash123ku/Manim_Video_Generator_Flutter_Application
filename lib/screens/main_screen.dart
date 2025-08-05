@@ -57,6 +57,21 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         size: 20,
                       ),
                     ),
+                    const Spacer(),
+                    // Settings icon (right side)
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ],
                 ),
               ),
