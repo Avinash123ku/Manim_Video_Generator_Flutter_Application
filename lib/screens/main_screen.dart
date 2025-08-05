@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'general_chat_screen.dart';
 import 'pdf_interaction_screen.dart';
 import 'history_screen.dart';
+import 'test_supabase_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -37,7 +38,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Clean header like Perplexity
+              // Ultra-clean header like Perplexity
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -57,32 +58,32 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         size: 20,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    // App title
-                    const Text(
-                      'chat pdf app',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
                     const Spacer(),
-                    // Settings icon (right side like Perplexity)
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(18),
+                    // Debug button (only visible in debug mode)
+                    if (true) // You can change this to false to hide
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TestSupabaseScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: const Icon(
+                            Icons.bug_report,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -130,11 +131,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ],
           ),
         ),
-      onTap: onTap,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -92,7 +92,7 @@ class _GeneralChatScreenStatefulState
             ),
             child: Row(
               children: [
-                // Search icon (left side like Perplexity)
+                // Search icon (left side like Perplexity) - removed camera icon
                 Container(
                   width: 44,
                   height: 44,
@@ -111,10 +111,6 @@ class _GeneralChatScreenStatefulState
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A).withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
                     child: Row(
                       children: [
                         Expanded(
